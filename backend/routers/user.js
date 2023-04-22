@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
@@ -15,9 +15,6 @@ router.post('/register', async (req, res) => {
   try {
     user = new User(req.body);
     user.user_password = bcrypt.hashSync(user_password, 8);
-    // To later verify the password...
-    // Load hash from your password DB. into 'hash'
-    // bcrypt.compareSync(user_password, hash);
     await user.save();
     res.status(201).send();
   } catch(e) {

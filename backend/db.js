@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
+function db() {
+  return null;
+}
 
-mongoose.connect('mongodb://127.0.0.1:27017/twobytwo', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+export function db;

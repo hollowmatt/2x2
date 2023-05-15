@@ -9,19 +9,20 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const [mgrs, setMgrs] = useState([]);
-  const [mgr, setMgr] = useState([]);
+  const [mgrs, setMgrs] = useState([{ldap: "select..."}]);
+  const [mgr, setMgr] = useState("select");
   
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    if (mgr==="") {
-      setMgr(mgrs[0].ldap);
+    if (mgr==="select") {
+      alert("Must select your manager to register")
+    } else {
+      signUp();
+      setEmail("");
+      setUsername("");
+      setPassword("");
+      setMgr("select");
     }
-    signUp();
-    setEmail("");
-    setUsername("");
-    setPassword("");
-    setMgr("");
   };
 
   useEffect(() => {
@@ -29,7 +30,7 @@ function Register() {
       fetch(BASE_PATH + "/api/all/mgrs", {
       })
         .then((res) => res.json())
-        .then((data) => setMgrs(data.mgrs))
+        .then((data) => setMgrs(mgrs.join(data.mgrs)))
         .catch((err) => console.error(err));
     };
     fetchMgrs();

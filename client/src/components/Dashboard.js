@@ -24,13 +24,13 @@ function Dashboard() {
         </Flex>
         <Stack>
           <CardBody width='600px'>
-            <Heading size='md'>Choose an action</Heading>
+            <Heading size='md' style={{paddingBottom: '15px'}}>Choose an action</Heading>
             <Stack>
-              <Button variant="solid" colorScheme="whiteAlpha"><Link to="/create">Create new Entry</Link></Button>
+              <Button variant="solid" colorScheme="blue"><Link to="/create">Create new Entry</Link></Button>
               &nbsp;
-              <Button variant='solid' colorScheme='whiteAlpha' disabled='true'>List Entries</Button>
+              <Button variant='solid' colorScheme='blue' disabled='true'>List Entries</Button>
               &nbsp;
-              <Button variant='solid' colorScheme='whiteAlpha' disabled='true'>Report</Button>
+              <Button variant='solid' colorScheme='blue' disabled='true'>Report</Button>
             </Stack>
           </CardBody>
         </Stack>

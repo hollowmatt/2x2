@@ -1,0 +1,4 @@
+runtime: nodejs18
+service: server
+env_variables:
+  DB_PATH: "path will go here"

@@ -25,11 +25,13 @@ function Dashboard() {
         <Stack>
           <CardBody width='600px'>
             <Heading size='md'>Choose an action</Heading>
-            <Button variant="solid" colorScheme="whiteAlpha"><Link to="/create">Create new Entry</Link></Button>
-            &nbsp;
-            <Button variant='solid' colorScheme='whiteAlpha' disabled='true'>List Entries</Button>
-            &nbsp;
-            <Button variant='solid' colorScheme='whiteAlpha' disabled='true'>Report</Button>
+            <Stack>
+              <Button variant="solid" colorScheme="whiteAlpha"><Link to="/create">Create new Entry</Link></Button>
+              &nbsp;
+              <Button variant='solid' colorScheme='whiteAlpha' disabled='true'>List Entries</Button>
+              &nbsp;
+              <Button variant='solid' colorScheme='whiteAlpha' disabled='true'>Report</Button>
+            </Stack>
           </CardBody>
         </Stack>
         

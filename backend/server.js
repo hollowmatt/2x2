@@ -140,7 +140,7 @@ app.get("/api/all/wbrtypes", (req, res) => {
 });
 
 app.post("/api/register", async(req,res) => {
-  const { email, password, username } = req.body;
+  const { email, password, username, mgr=null } = req.body;
   const id = generateID();
   const result = users.filter(
     (user) => user.email === email && user.password === password

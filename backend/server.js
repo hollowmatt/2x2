@@ -129,8 +129,9 @@ app.get("/api/all/users", (req, res) => {
 
 app.get("/api/all/mgrs", (req, res) => {
   res.json({
-    managers: mgrs,
+    mgrs: mgrs,
   });
+  console.log(mgrs);
 });
 
 app.get("/api/all/wbrtypes", (req, res) => {

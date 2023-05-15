@@ -1,5 +1,5 @@
 import { Card, Stack, Image, CardBody, Heading, Flex, Button } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 
 const BASE_PATH = process.env.REACT_APP_API_ADDRESS;
@@ -9,14 +9,31 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [mgrs, setMgrs] = useState([]);
+  const [mgr, setMgr] = useState([]);
   
   const handleSubmit = (evt) => {
     evt.preventDefault();
+    if (mgr==="") {
+      setMgr(mgrs[0].ldap);
+    }
     signUp();
     setEmail("");
     setUsername("");
     setPassword("");
+    setMgr("");
   };
+
+  useEffect(() => {
+    const fetchMgrs = () => {
+      fetch(BASE_PATH + "/api/all/mgrs", {
+      })
+        .then((res) => res.json())
+        .then((data) => setMgrs(data.mgrs))
+        .catch((err) => console.error(err));
+    };
+    fetchMgrs();
+  },[]);
 
   const signUp = () => {
     fetch(BASE_PATH + "/api/register", {
@@ -25,7 +42,7 @@ function Register() {
         email,
         password,
         username,
-        "mgr": null,
+        mgr,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -92,6 +109,13 @@ function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
               />
+              <label htmlFor='mgr'>Manager</label>
+              <select id='mgr' name='mgr' onChange={(e) => setMgr(e.target.value)}>
+                {mgrs.map((mgr) => (
+                  <option value={mgr.ldap} key={mgr.id}>{mgr.name}</option>
+                ))}
+              </select>
+              <br/>
               <Button colorScheme='blue' variant='outline' type='submit'>Register</Button>
               <br/>
               <p>

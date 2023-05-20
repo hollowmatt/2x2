@@ -19,7 +19,6 @@ const db = new Firestore({
 
 //mock db (for now) storage
 const users = [];
-const usersInfo = [];
 const wbrList = [];
 const mgrs = [
   {
@@ -135,7 +134,14 @@ app.get('/', (req, res) => {
   })
 });
 
-app.get("/api/all/users", (req, res) => {
+app.get("/api/all/users", async(req, res) => {
+  const usersInfo = [];
+  await db.collection('users').get().then((querySnapshot) => {
+    querySnapshot.forEach((user) => {
+      usersInfo.push({username: user.data().username, mgr: user.data().mgr});
+    });
+  });
+  console.log(usersInfo);
   res.json({
     users: usersInfo,
   });
@@ -156,17 +162,9 @@ app.get("/api/all/wbrtypes", (req, res) => {
 
 app.post("/api/register", async(req,res) => {
   const { email, password, username, mgr=null } = req.body;
-  const id = generateID();
-  // const result = users.filter(
-  //   (user) => user.email === email && user.password === password
-  // );
+
   const result = db.collection('users').doc(username).get();
   if(result.length === 0) {
-    const newUser = { id, email, password, username, mgr};
-    const newUserInfo = {id, username, mgr};
-    users.push(newUser);
-    usersInfo.push(newUserInfo);
-    console.log("account created with id: " + id);
     const userRef = db.collection('users').doc(username);
     await userRef.set({
       email: email,
@@ -186,10 +184,8 @@ app.post("/api/register", async(req,res) => {
 
 app.post("/api/login", (req, res) => {
   const {email, password} = req.body;
-  
-  let result = users.filter(
-    (user) => user.email === email && user.password === password
-  );
+  let result = db.collection('users').where("email", "==", email).where("password", "==", password);
+  console.log(result);
 
   if (result.length !== 1) {
     return res.json({

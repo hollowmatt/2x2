@@ -2,6 +2,8 @@
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
+const Firestore = require('@google-cloud/firestore');
+const KEYFILE = process.env.KEY || './key_file.json';
 
 //setup express server
 const app = express();
@@ -9,11 +11,23 @@ const PORT = process.env.PORT || 4040;
 app.use(express.json());
 app.use(cors());
 
+//Firestore
+const db = new Firestore({
+  projectId: 'threadly-386216',
+  keyFilename: KEYFILE,
+});
+
 //mock db (for now) storage
 const users = [];
 const usersInfo = [];
 const wbrList = [];
 const mgrs = [
+  {
+    id: "m0",
+    name: "select...",
+    title: "select",
+    ldap: "clivedsouza"
+  },
   {
     id: "m1",
     name: "Clive D'Souza",
@@ -143,15 +157,23 @@ app.get("/api/all/wbrtypes", (req, res) => {
 app.post("/api/register", async(req,res) => {
   const { email, password, username, mgr=null } = req.body;
   const id = generateID();
-  const result = users.filter(
-    (user) => user.email === email && user.password === password
-  );
+  // const result = users.filter(
+  //   (user) => user.email === email && user.password === password
+  // );
+  const result = db.collection('users').doc(username).get();
   if(result.length === 0) {
     const newUser = { id, email, password, username, mgr};
     const newUserInfo = {id, username, mgr};
     users.push(newUser);
     usersInfo.push(newUserInfo);
     console.log("account created with id: " + id);
+    const userRef = db.collection('users').doc(username);
+    await userRef.set({
+      email: email,
+      password: password,
+      username: username,
+      mgr: mgr
+    });
     return res.json({
       message: "Account created successfully",
     });

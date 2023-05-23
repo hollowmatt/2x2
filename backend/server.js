@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const Firestore = require('@google-cloud/firestore');
 const KEYFILE = process.env.KEY || './key_file.json';
 
@@ -89,6 +90,7 @@ const wbr_types = [
 
 //helper function to get a UUID
 const generateID = () => crypto.randomUUID;
+const saltRounds = 12;
 
 //APIs
 app.get('/', (req, res) => {
@@ -160,6 +162,8 @@ app.get("/api/all/wbrtypes", (req, res) => {
 
 app.post("/api/register", async(req,res) => {
   const { email, password, username, mgr=null } = req.body;
+  const pass = await bcrypt.hash(password, saltRounds);
+ 
   const result = db.collection('users').doc(username)
   result.get().then((doc) => {
     if(doc.exists) {
@@ -170,7 +174,7 @@ app.post("/api/register", async(req,res) => {
       const userRef = db.collection('users').doc(username);
       userRef.set({
         email: email,
-        password: password,
+        password: pass,
         username: username,
         mgr: mgr
       });
@@ -187,16 +191,18 @@ app.post("/api/login", async(req, res) => {
   const result = db.collection('users').doc(username)
   result.get().then((doc) => {
     if(doc.exists) {
-      if(doc.data().password === password) {
-        res.json({
-          message: "Login successful",
-          id: username,
-        });
-      } else {
-        return res.json({
-          error_message: "Invalid login attempt"
-        });
-      }
+      bcrypt.compare(password, doc.data().password, (error, result) => {
+        if(result) {
+          res.json({
+            message: "Login Successful",
+            id: username,
+          })
+        } else {
+          res.json({
+            error_message: "Invalid login attempt"
+          })
+        }
+      });
     }
     else {
       return res.json({

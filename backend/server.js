@@ -141,7 +141,6 @@ app.get("/api/all/users", async(req, res) => {
       usersInfo.push({username: user.data().username, mgr: user.data().mgr});
     });
   });
-  console.log(usersInfo);
   res.json({
     users: usersInfo,
   });
@@ -151,7 +150,6 @@ app.get("/api/all/mgrs", (req, res) => {
   res.json({
     mgrs: mgrs,
   });
-  console.log(mgrs);
 });
 
 app.get("/api/all/wbrtypes", (req, res) => {
@@ -162,41 +160,50 @@ app.get("/api/all/wbrtypes", (req, res) => {
 
 app.post("/api/register", async(req,res) => {
   const { email, password, username, mgr=null } = req.body;
-
-  const result = db.collection('users').doc(username).get();
-  if(result.length === 0) {
-    const userRef = db.collection('users').doc(username);
-    await userRef.set({
-      email: email,
-      password: password,
-      username: username,
-      mgr: mgr
-    });
-    return res.json({
-      message: "Account created successfully",
-    });
-  }
-  res.json({
-    error_message: `User already exists`,
+  const result = db.collection('users').doc(username)
+  result.get().then((doc) => {
+    if(doc.exists) {
+      res.json({
+        error_message: "user already exists",
+      });
+    } else {
+      const userRef = db.collection('users').doc(username);
+      userRef.set({
+        email: email,
+        password: password,
+        username: username,
+        mgr: mgr
+      });
+      return res.json({
+        message: "Account created successfully",
+      });
+    }
   });
-
+  
 });
 
-app.post("/api/login", (req, res) => {
-  const {email, password} = req.body;
-  let result = db.collection('users').where("email", "==", email).where("password", "==", password);
-  console.log(result);
-
-  if (result.length !== 1) {
-    return res.json({
-      error_message: "Invalid login attempt"
-    });
-  }
-
-  res.json({
-    message: "Login successful",
-    id: result[0].id,
-  })
+app.post("/api/login", async(req, res) => {
+  const {username, password} = req.body;
+  const result = db.collection('users').doc(username)
+  result.get().then((doc) => {
+    if(doc.exists) {
+      if(doc.data().password === password) {
+        res.json({
+          message: "Login successful",
+          id: username,
+        });
+      } else {
+        return res.json({
+          error_message: "Invalid login attempt"
+        });
+      }
+    }
+    else {
+      return res.json({
+        error_message: "Invalid login attempt"
+      });
+    }
+  })  
 });
 
 //Start server

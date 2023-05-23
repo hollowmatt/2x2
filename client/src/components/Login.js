@@ -5,14 +5,14 @@ import { Link, useNavigate } from "react-router-dom";
 const BASE_PATH = process.env.REACT_APP_API_ADDRESS;
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
     loginUser();
-    setEmail("");
+    setUsername("");
     setPassword("");
   };
 
@@ -20,7 +20,7 @@ function Login() {
     fetch(BASE_PATH + "/api/login", {
       method: "POST",
       body: JSON.stringify({
-        email,
+        username,
         password,
       }),
       headers: {
@@ -61,14 +61,14 @@ function Login() {
           <CardBody width='600px'>
             <Heading size='md'>Log in to your account</Heading>
             <form className="loginForm" onSubmit={handleSubmit}>
-              <label htmlFor="email">Email Address</label>
+              <label htmlFor="username">Username</label>
               <input
                 type="text"
-                name="email"
-                id="email"
+                name="username"
+                id="username"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <label htmlFor="password">Password</label>
               <input

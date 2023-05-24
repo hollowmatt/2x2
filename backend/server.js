@@ -109,11 +109,11 @@ app.get('/', (req, res) => {
         description: "API to login to the system, will be deprecated when integrating with Auth provider",
         method: "POST",
         route: "/api/login",
-        params: ["email", "password"]
+        params: ["username", "password"]
       },
       {
         name: "Get All Users",
-        description: "API to login to the system, will be deprecated when integrating with Auth provider",
+        description: "API to retrieve list of users, with their manager",
         method: "GET",
         route: "/api/all/users",
         params: "none"

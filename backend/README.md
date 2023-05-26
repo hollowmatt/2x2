@@ -27,17 +27,17 @@ On the backend, the following dependencies are installed:
   
 
 ## Routes
-`GET /`  - root API to return list of APIs
-`GET /api/all/users` - return list of users with managers
-`GET /api/all/mgrs` - return list of managers
-`GET /api/all/wbrtypes` - return list of WBR types
-`GET /api/all/wbrs`  - return list of WBRs
-`GET /api/all/wbrs/id/entries` - return list of entries for a WBR
-`POST /api/register` - create an account
-`POST /api/login` - login
-`POST /api/wbr` - create WBR
-`POST /api/wbr/id/entry` - create WBR entry
-`DELETE /api/login` - logout
-`DELETE /api/wbr/id` - delete WBR
-`DELETE /api/wbr/id/entry/id` - delete WBR entry
+`GET /`  - root API to return list of APIs <br/>
+`GET /api/all/users` - return list of users with managers <br/>
+`GET /api/all/mgrs` - return list of managers <br/>
+`GET /api/all/wbrtypes` - return list of WBR types <br/>
+`GET /api/all/wbrs`  - return list of WBRs <br/>
+`GET /api/all/wbrs/id/entries` - return list of entries for a WBR <br/>
+`POST /api/register` - create an account <br/>
+`POST /api/login` - login <br/>
+`POST /api/wbr` - create WBR <br/>
+`POST /api/wbr/id/entry` - create WBR entry <br/>
+`DELETE /api/login` - logout <br/>
+`DELETE /api/wbr/id` - delete WBR <br/>
+`DELETE /api/wbr/id/entry/id` - delete WBR entry <br/>
 ...

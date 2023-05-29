@@ -20,7 +20,8 @@ const db = new Firestore({
 
 //mock db (for now) storage
 const users = [];
-const wbrList = [];
+
+//Placeholder until in Firestore
 const mgrs = [
   {
     id: "m0",
@@ -65,6 +66,8 @@ const mgrs = [
     ldap: "azzi"
   }
 ];
+
+//placehoder  until in Firestore
 const wbr_types = [
   {
     id: "wt1",
@@ -85,6 +88,73 @@ const wbr_types = [
     id: "wt4",
     type: "Highlights/Lowlights",
     description: "Key Customer or Partner Highlights/Lowlights.",
+  }
+];
+
+//placeholder until in Firestore
+const allwbrs = [
+  {
+    id: 'w1',
+    region: 'NorthAm',
+    title: "Week of May 22, 2023"
+  },
+  {
+    id: 'w2',
+    region: 'NorthAm',
+    title: "Week of May 29, 2023"
+  }
+];
+//placeholder until in Firestore
+const allwbrentries = [
+  {
+    wbr_id: "w1",
+    wbrtype: 'wt1',
+    username: 'chopper',
+    mgr: "azzi",
+    product: ['App Engine', 'Firestore'],
+    title: "CI/CD on GCP",
+    description: "Using App Engine and Firestore, building a great app is easy.",
+    impact: "N/A",
+    escalated: "no",
+    partner: "SADA"
+  },
+  {
+    wbr_id: "w1",
+    wbrtype: 'wt2',
+    username: 'hollowmatt',
+    mgr: "azzi",
+    product: ['Firestore'],
+    title: "Unclear documentation",
+    description: "Integration of App Engine and Firestore is complicated, and documentation is unclear.",
+    impact: "Moderate",
+    escalated: "yes",
+    buganizer: "123456",
+    partner: "SADA"
+  },
+  {
+    wbr_id: "w2",
+    wbrtype: 'wt3',
+    username: 'chopper',
+    mgr: "azzi",
+    okr: "PDQ",
+    title: "Quality review of CI/CD pipeline",
+    description: "Using App Engine and Firestore, SADA built a full app and pipeline.  Conduccted review...",
+    dri_impact: "increase",
+    pdq_link: "http://google.com",
+    escalated: "no",
+    partner: "SADA"
+  },
+  {
+    wbr_id: "w2",
+    wbrtype: 'wt4',
+    username: 'hollowmatt',
+    mgr: "azzi",
+    product: ['App Engine', 'Firestore'],
+    title: "Increase in revenue and consumption with CI/CD on GCP",
+    description: "Using App Engine and Firestore, building a great app is easy.  This has increased revenue and consumption",
+    type: "Highlight",
+    escalated: "no",
+    partner: "SADA"
   }
 ];
 
@@ -159,6 +229,38 @@ app.get("/api/all/wbrtypes", (req, res) => {
     wbrtypes: wbr_types,
   });
 });
+
+app.get("/api/all/wbrs", (req, res) => {
+  res.json({
+    wbrs: allwbrs,
+  });
+});
+
+app.get("/api/all/wbrs/:id", (req, res) => {
+  const wID = req.params.id;
+  const wbr = allwbrs.find(_entry => _entry.id === wID);
+  if(wbr) {
+    res.json({
+      wbr: wbr,
+    });
+  } else {
+    res.json({message: `WBR ID ${wID} doesn't exist`});
+  }
+});
+
+app.get("/api/all/wbrs/:id/entries", (req, res) => {
+  const wID = req.params.id;
+  const items = allwbrentries.filter(_entry => _entry.wbr_id === wID);
+
+  if(items.length > 0) {
+    res.json({
+      entries: items,
+    });
+  }
+  else {
+    res.json({message: `WBR ID ${wID} doesn't exist`});
+  }
+})
 
 app.post("/api/register", async(req,res) => {
   const { email, password, username, mgr=null } = req.body;

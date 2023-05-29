@@ -25,3 +25,20 @@ On the backend, the following dependencies are installed:
 - cors (for allowing cross-site API requests)
 - @google-cloud-firestore (for connecting to firestore)
   
+
+## Routes
+`GET /`  - root API to return list of APIs <br/>
+`GET /api/all/users` - return list of users with managers <br/>
+`GET /api/all/mgrs` - return list of managers <br/>
+`GET /api/all/wbrtypes` - return list of WBR types <br/>
+`GET /api/all/wbrs`  - return list of WBRs <br/>
+`GET /api/all/wbrs/:id` - return a WBR by id
+`GET /api/all/wbrs/:id/entries` - return list of entries for a WBR <br/>
+`POST /api/register` - create an account <br/>
+`POST /api/login` - login <br/>
+`POST /api/wbr` - create WBR  (Not Yet Implemented)<br/>
+`POST /api/wbr/id/entry` - create WBR entry (Not Yet Implemented)<br/>
+`DELETE /api/login` - logout (Not Yet Implemented)<br/>
+`DELETE /api/wbr/id` - delete WBR (Not Yet Implemented)<br/>
+`DELETE /api/wbr/id/entry/id` - delete WBR entry (Not Yet Implemented)<br/>
+...

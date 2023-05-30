@@ -63,7 +63,7 @@ app.get("/api/all/users", async(req, res) => {
   const usersInfo = [];
   await data.db.collection(data.COLLECTIONS.USERS).get().then((querySnapshot) => {
     querySnapshot.forEach((user) => {
-      usersInfo.push({username: user.data().username, mgr: user.data().mgr});
+      usersInfo.push({username: user.data().username, name: user.data().name, email: user.data().email, mgr: user.data().mgr});
     });
   });
   res.json({
@@ -71,9 +71,15 @@ app.get("/api/all/users", async(req, res) => {
   });
 });
 
-app.get("/api/all/mgrs", (req, res) => {
+app.get("/api/all/mgrs", async(req, res) => {
+  const mgrsInfo = [];
+  await data.db.collection(data.COLLECTIONS.MGRS).get().then((querySnapshot) => {
+    querySnapshot.forEach((mgr) => {
+      mgrsInfo.push({ldap: mgr.data().ldap, name: mgr.data().name, email: mgr.data().email, title: mgr.data().title, region: mgr.data().region});
+    });
+  });
   res.json({
-    mgrs: data.mgrs,
+    mgrs: mgrsInfo,
   });
 });
 
@@ -115,20 +121,45 @@ app.get("/api/all/wbrs/:id/entries", (req, res) => {
   }
 })
 
+app.post("/api/mgr", async(req,res) => {
+  const { ldap, name, title, region } = req.body;
+  const result = data.db.collection(data.COLLECTIONS.MGRS).doc(ldap);
+  result.get().then((doc) => {
+    if(doc.exists) {
+      res.json({
+        error_message: "manager already exists",
+      });
+    } else {
+      const mgrRef = data.db.collection(data.COLLECTIONS.MGRS).doc(ldap);
+      mgrRef.set({
+        ldap: ldap,
+        name: name,
+        email: ldap + "@google.com",
+        title: title,
+        region: region
+      });
+      return res.json({
+        message: "Manager added to system",
+      })
+    }
+  });
+});
+
 app.post("/api/register", async(req,res) => {
-  const { email, password, username, mgr=null } = req.body;
+  const { name, password, username, mgr=null } = req.body;
   const pass = await bcrypt.hash(password, saltRounds);
  
-  const result = data.db.collection(data.COLLECTIONS.USERS).doc(username)
+  const result = data.db.collection(data.COLLECTIONS.USERS).doc(username);
   result.get().then((doc) => {
     if(doc.exists) {
       res.json({
         error_message: "user already exists",
       });
     } else {
-      const userRef = data.db.collection('users').doc(username);
+      const userRef = data.db.collection(data.COLLECTIONS.USERS).doc(username);
       userRef.set({
-        email: email,
+        email: username + "@google.com",
+        name: name,
         password: pass,
         username: username,
         mgr: mgr
@@ -143,7 +174,7 @@ app.post("/api/register", async(req,res) => {
 
 app.post("/api/login", async(req, res) => {
   const {username, password} = req.body;
-  const result = data.db.collection(data.COLLECTIONS.USERS).doc(username)
+  const result = data.db.collection(data.COLLECTIONS.USERS).doc(username);
   result.get().then((doc) => {
     if(doc.exists) {
       bcrypt.compare(password, doc.data().password, (error, result) => {

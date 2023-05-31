@@ -63,7 +63,12 @@ app.get("/api/all/users", async(req, res) => {
   const usersInfo = [];
   await data.db.collection(data.COLLECTIONS.USERS).get().then((querySnapshot) => {
     querySnapshot.forEach((user) => {
-      usersInfo.push({username: user.data().username, name: user.data().name, email: user.data().email, mgr: user.data().mgr});
+      usersInfo.push({
+        username: user.data().username, 
+        name: user.data().name, 
+        email: user.data().email, 
+        mgr: user.data().mgr
+      });
     });
   });
   res.json({
@@ -75,7 +80,13 @@ app.get("/api/all/mgrs", async(req, res) => {
   const mgrsInfo = [];
   await data.db.collection(data.COLLECTIONS.MGRS).get().then((querySnapshot) => {
     querySnapshot.forEach((mgr) => {
-      mgrsInfo.push({ldap: mgr.data().ldap, name: mgr.data().name, email: mgr.data().email, title: mgr.data().title, region: mgr.data().region});
+      mgrsInfo.push({
+        ldap: mgr.data().ldap, 
+        name: mgr.data().name, 
+        email: mgr.data().email, 
+        title: mgr.data().title, 
+        region: mgr.data().region
+      });
     });
   });
   res.json({
@@ -142,6 +153,27 @@ app.post("/api/mgr", async(req,res) => {
         message: "Manager added to system",
       })
     }
+  });
+});
+
+app.post("/api/wbr", async(req,res) => {
+  const { region } = req.body;
+  //get next Monday as id
+  //Check if it already exists
+    //set title to "Week ending [following Friday data]"
+    //save record
+    //return msg
+  return res.json({
+    message: "Under construction - record not saved",
+  });
+});
+
+app.post("/api/wbr/:id/entry", async(req,res) => {
+  const wID = req.params.id;
+  //switch on type
+  //save details based on type
+  return res.json({
+    message: "Under construction - record not saved",
   });
 });
 

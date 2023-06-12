@@ -11,6 +11,8 @@ const PORT = process.env.PORT || 4040;
 app.use(express.json());
 app.use(cors());
 
+const fflags = [];
+
 //helper function to get a UUID
 const generateID = () => crypto.randomUUID;
 const saltRounds = 12;
@@ -18,6 +20,7 @@ const saltRounds = 12;
 //APIs
 app.get('/', (req, res) => {
   res.json({
+    fflags,
     message: "PE WBR - API set",
     routes: [
       {
@@ -229,6 +232,32 @@ app.post("/api/login", async(req, res) => {
     }
   })  
 });
+
+app.post("/api/fflag", async(req, res) => {
+  const {flag_name, value} = req.body;
+  const result = fflags.filter(
+    (fflag) => fflag.flag_name === flag_name
+  );
+  const newFlag = {flag_name, value};
+  if(result.length === 0) {
+    fflags.push(newFlag);
+    return res.json({
+      message: "Feature flag added"
+    })
+  } else {
+    fflags.splice(fflags.find(flag => flag.flag_name === flag_name), 1);
+    fflags.push(newFlag);
+    return res.json({
+      message: "Feature flag updated"
+    })
+  } 
+});
+
+app.get("/api/all/fflag", async(req, res) => {
+  res.json(
+    fflags
+  );
+})
 
 //Start server
 app.listen(PORT, () => {

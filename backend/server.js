@@ -4,12 +4,20 @@ const cors = require('cors');
 const data = require('./data');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const { deserialize } = require('v8');
 
 //setup express server
 const app = express();
 const PORT = process.env.PORT || 4040;
 app.use(express.json());
 app.use(cors());
+
+const fflags = [
+  {
+    flag_name: "env",
+    value: "server"
+  }
+];
 
 //helper function to get a UUID
 const generateID = () => crypto.randomUUID;
@@ -18,6 +26,7 @@ const saltRounds = 12;
 //APIs
 app.get('/', (req, res) => {
   res.json({
+    fflags,
     message: "PE WBR - API set",
     routes: [
       {
@@ -33,6 +42,42 @@ app.get('/', (req, res) => {
         method: "POST",
         route: "/api/login",
         params: ["username", "password"]
+      },
+      {
+        name: "Add Manager",
+        description: "API to add a manager to the system",
+        method: "POST",
+        route: "/api/mgr",
+        params: ["ldap", "name", "title", "region"]
+      },
+      {
+        name: "Add WBR",
+        description: "Not Yet Implemented",
+        method: "POST",
+        route: "/api/wbr",
+        params: "TBD"
+      },
+      {
+        name: "Add Entry",
+        description: "Not yet Implemented",
+        method: "POST",
+        route: "/api/wbr/:id/entry",
+        params: "TBD"
+      },
+      {
+        name: "Create/Set Feature Flag",
+        description: "Create a new Feature Flag, or update value of existing",
+        methdo: "POST",
+        route: "/api/fflag",
+        params: ["flag_name", "value"]
+
+      },
+      {
+        name: "Get Feature Flags",
+        description: "Get all feature flags",
+        method: "GET",
+        route: "/api/all/fflag",
+        params: "none"
       },
       {
         name: "Get All Users",
@@ -229,6 +274,32 @@ app.post("/api/login", async(req, res) => {
     }
   })  
 });
+
+app.post("/api/fflag", async(req, res) => {
+  const {flag_name, value} = req.body;
+  const result = fflags.filter(
+    (fflag) => fflag.flag_name === flag_name
+  );
+  const newFlag = {flag_name, value};
+  if(result.length === 0) {
+    fflags.push(newFlag);
+    return res.json({
+      message: "Feature flag added"
+    })
+  } else {
+    fflags.splice(fflags.find(flag => flag.flag_name === flag_name), 1);
+    fflags.push(newFlag);
+    return res.json({
+      message: "Feature flag updated"
+    })
+  } 
+});
+
+app.get("/api/all/fflag", async(req, res) => {
+  res.json(
+    fflags
+  );
+})
 
 //Start server
 app.listen(PORT, () => {

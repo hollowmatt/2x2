@@ -21,12 +21,30 @@ function Create() {
   return(
     <div>
       <Nav/>
-      <p>Placeholder</p>
+      <Heading>Create Entry</Heading>
+      <label htmlFor="wbrType" style={{fontWeight:"bold", paddingRight:"5px"}}>Entry Type:</label>
       <select id='wbrType' name='wbrType' onChange={(e) => setWbr(e.target.value)}>
         {wbrTypes.map((wbrtype) => (
           <option value={wbrtype.id} key={wbrtype.id}>{wbrtype.type}</option>
         ))}
       </select>
+      <section>
+        <label htmlFor="product" style={{fontWeight:"bold", paddingRight:"5px"}}>Products: </label>
+        <teextarea name="product">[eventually this will be chips]</teextarea>
+        <hr/>
+        <label htmlFor="title" style={{fontWeight:"bold", padding:"5px"}}>Title: </label>
+        <input name="title"></input>
+        <br/>
+        <label htmlFor="description" style={{fontWeight:"bold", paddingRight:"5px"}}>description: </label>
+        <textarea name="description"></textarea>
+        <br/>
+        <label htmlFor="impact" style={{fontWeight:"bold", paddingRight:"5px"}}>Impact: </label>
+        <select>
+          <option value='low' key='low'>Low</option>
+          <option value='med' key='med'>Medium</option>
+          <option value='high' key='high'>High</option>
+        </select>
+      </section>
     </div>
   );
 }
